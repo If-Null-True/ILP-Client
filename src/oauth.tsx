@@ -35,12 +35,8 @@ interface ClaimTypes {
     scope: string,
 }
 
-interface UserInfo {
-
-}
-
 export const claims: ClaimTypes = new Proxy<ClaimTypes | {}>({}, { get: (target, prop: string, receiver) => checkClaim(prop) }) as ClaimTypes
-export const userInfo: UserInfo = new Proxy<UserInfo | {}>({}, { get: (target, prop: string, receiver) => checkUserInfo(prop) }) as UserInfo
+
 
 function now() {
     let milli = (new Date()).getTime()
@@ -155,6 +151,7 @@ class OAuth extends React.Component<{ children: React.ReactNode }> {
                 let claims = jwt_decode(accessToken)
                 localStorage.setItem("accessToken", accessToken)
                 localStorage.setItem("claims", JSON.stringify(claims))
+                localStorage.removeItem("userInfo")
                 console.log("WORKS")
             })
             .then(() => {
@@ -169,7 +166,7 @@ class OAuth extends React.Component<{ children: React.ReactNode }> {
         if (localStorage.getItem("accessToken") && claims.exp && claims.exp > now()) {
             return <>{this.props.children}</>
         }
-        return <h1>Loading...</h1>;
+        return <h1>Loading OAuth2 Login...</h1>;
     }
 }
 
