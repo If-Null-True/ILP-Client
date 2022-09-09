@@ -1,6 +1,6 @@
 import React from "react";
 import { claims } from "./oauth";
-const API_URL = "https://intranet.nbscmanlys-h.schools.nsw.edu.au/oauth/api"
+const API_URL = process.env.REACT_APP_API_URL  as string
 
 function checkUserInfo(name: string): false | string | undefined {
     let storedUserInfo = localStorage.getItem("userInfo")

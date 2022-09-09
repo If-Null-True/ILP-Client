@@ -1,0 +1,131 @@
+@use '../globals';
+@use '../flex';
+
+#article-wizard {
+  padding: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+
+#article-wizard .options {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  position: sticky;
+  top: 20px;
+
+  button {
+    background: none;
+    outline: none;
+    margin: 0;
+    border-radius: 0;
+
+    &:hover,
+    &:focus {
+      background: globals.$clr-hover;
+    }
+
+    &.selected {
+      background: rgba(globals.$clr-accent, 0.1);
+      margin-left: -3px;
+      border-left: 3px solid globals.$clr-accent;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+    }
+
+    p {
+      font-size: 0.75rem;
+    }
+  }
+}
+
+
+#article-wizard .data {
+  width: calc(100% - 280px);
+
+  h4 {
+    margin: 2em 0 1em;
+  }
+
+  input, .select-wrapper, textarea {
+    outline: none;
+    // margin-top: 5px;
+  }
+
+  input[name='title'] {
+    width: 500px;
+  }
+
+  textarea {
+    width: 750px;
+    height: 300px;
+    resize: none;
+  }
+}
+
+
+.RichEditor-root {
+  .controls {
+    background: globals.$clr-paper;
+    box-shadow: 0px 15px 15px -15px rgba(black, 0.75);
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+
+    .RichEditor-controls {
+      display: flex;
+      align-items: center;
+    }
+
+    .RichEditor-styleButton {
+      margin: 2px;
+      padding: 0;
+      height: 2em;
+      width: 2em;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      &:hover {
+        background: globals.$clr-hover;
+      }
+    }
+
+    .RichEditor-activeButton {
+      background: rgba(globals.$clr-accent, 0.2);
+
+      &:hover {
+        background: rgba(globals.$clr-accent, 0.15);
+      }
+    }
+
+    .basic {
+      margin-left: 8px;
+      border-left: 2px solid globals.$clr-hover;
+      padding-left: 8px;
+
+      .RichEditor-styleButton * {
+        font-family: 'Roboto Slab', serif;
+      }
+    }
+  }
+
+  #text-editor {
+    margin-top: 0;
+    border-radius: 0 0 50px 50px;
+  }
+
+  pre {
+    background: globals.$clr-hover;
+    margin: 0.75rem;
+    padding: 7px;
+  }
+}

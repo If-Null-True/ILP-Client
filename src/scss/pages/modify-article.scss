@@ -1,0 +1,17 @@
+@use '../globals';
+@use '../flex';
+
+.article-modify {
+  position: relative;
+}
+
+.meta-info {
+  width: 20em;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.edit-wizard {
+  margin-left: 25em;
+}

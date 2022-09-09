@@ -1,0 +1,46 @@
+// FONTS
+$font-main: 'Google Sans Text', sans-serif;
+$font-title: 'Google Sans', sans-serif;
+$font-heading: 'Google Sans Display', sans-serif;
+$font-mono: 'Google Sans Mono', monospace;
+
+
+// COLOURS
+$clr-bg: #19212B;
+$clr-nav: #161D26;
+$clr-paper: #151D26;
+$clr-hover: #1C2530;
+$clr-grey: #6A7881; // also $light
+$clr-input: #464C50; // also $grey
+$clr-accent: #11B4DA; // also $turquoise
+
+
+// COLOURS (mschomepage-v3)
+$ice: #4ec3de;
+$turquoise: #11b4da;
+$blue: #1172b9;
+$purple: #6811b9;
+$pink: #b91192;
+$red: #da2110;
+$orange: #ea5f0a;
+$yellow: #d9bc0a;
+$green: #4fb911;
+
+$glacier: #dbe6f7;
+$light: #6a7881;
+$grey: #464c50;
+$meh: #31435d;
+$palenight: #222e3f;
+$dark: #1C1B29;
+
+
+// GRADIENTS
+$gradient-1: linear-gradient(90deg, $pink 0%, $turquoise 100%);
+$gradient-2: linear-gradient(90deg, $orange 0%, $pink 100%);
+$gradient-3: linear-gradient(90deg, $ice 0%, $blue 100%);
+
+
+// MISC
+$focus-outline: 3px solid $clr-accent;
+$sidebarnav-width: 126px;
+$collapsingnav-width: 30rem;

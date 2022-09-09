@@ -1,0 +1,164 @@
+@use "../globals";
+@use "../flex";
+
+body.sidebar main {
+  margin-left: globals.$sidebarnav-width;
+}
+
+
+#main-menu.sidebar {
+  background: globals.$clr-nav;
+
+  width: globals.$sidebarnav-width;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+
+  @include flex.centre();
+}
+
+#main-menu.sidebar ul {
+  width: 100%;
+
+  .divider {
+    height: 42px;
+    display: flex;
+    justify-content: center;
+    
+    hr {
+      width: 70%;
+    }
+  }
+}
+
+#main-menu.sidebar li {
+  width: 100%;
+  height: 6rem;
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  &.labelled {
+    height: 7rem;
+  }
+
+  a, 
+  button {
+    background: none;
+
+    margin: 1rem 0;
+    border-radius: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+
+    @include flex.centre();
+
+    .name {
+      display: inline-block;
+      margin-bottom: 5px;
+    }
+
+    .material-icons-outlined {
+      font-size: 2.5rem;
+    }
+  }
+
+  &:hover,
+  &:focus-within {
+    a,
+    button {
+      background: globals.$clr-hover;
+    }
+
+    .submenu {
+      display: flex;
+    }
+  }
+}
+
+#main-menu.sidebar .submenu {
+  background: globals.$clr-hover;
+
+  padding: 20px;
+  display: none;
+  position: absolute;
+  left: 100%;
+
+  li {
+    height: auto;
+  }
+
+  a {
+    font-size: 1.25rem;
+    color: white;
+    @include flex.centre(row);
+
+    .material-icons-outlined {
+      margin-right: 0.75rem;
+      display: inline-block;
+      font-size: 1.5rem;
+    }
+
+    img {
+      margin-right: 0.75rem;
+      width: 1.5rem;
+      height: 1.5rem;
+      display: inline-block;
+    }
+
+    &:hover,
+    &:focus {
+      color: globals.$clr-accent;
+    }
+  }
+}
+
+#main-menu.sidebar .search {
+  width: 760px;
+
+  form {
+    width: 100%;
+    height: 100%;
+    @include flex.centre();
+  }
+
+  label {
+    width: 100%;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  input {
+    width: 80%;
+    font-size: 1.25rem;
+  }
+}
+
+#main-menu.sidebar .more {
+  a {
+    margin: 0.5rem;
+    justify-content: start;
+  }
+}
+
+#main-menu.sidebar .years {
+  width: 13.5rem;
+
+  a {
+    margin: 0.5rem;
+    justify-content: start;
+  }
+}
+
+#main-menu.sidebar .categories {
+  width: 16rem;
+
+  a {
+    margin: 0.5rem;
+    justify-content: start;
+  }
+}

@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import OAuth from './oauth';
-import NeedUserInfo, {userInfo} from './userinfo';
+import {userInfo} from './userinfo';
 import ReadClaimsExample from './displayClaims';
 import ReadUserInfoExample from './displayUserInfo';
 
@@ -15,9 +15,7 @@ function TestLoginPage() {
                     <ReadClaimsExample/>
                     <br></br>
                     <h2>Info from school OAuth API:</h2>
-                    <NeedUserInfo>
-                        <ReadUserInfoExample/>
-                    </NeedUserInfo>
+                    <ReadUserInfoExample/>
                     <a
                         className="App-link"
                         href="https://reactjs.org"

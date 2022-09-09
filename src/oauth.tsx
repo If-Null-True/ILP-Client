@@ -1,19 +1,11 @@
 import React from "react";
 import jwt_decode from "jwt-decode"
 import { sha256 } from "js-sha256"
+import NeedUserInfo from "./userinfo";
 
-const CLIENT_ID = "ae7f4206-cf16-4c1c-bd85-eb49f42f1e61"
-const AUTHORIZE_URL = "https://intranet.nbscmanlys-h.schools.nsw.edu.au/oauth/v2.0/authorize"
-const TOKEN_URL = "https://intranet.nbscmanlys-h.schools.nsw.edu.au/oauth/v2.0/token"
-const PUBLIC_KEY = "-----BEGIN PUBLIC KEY-----\
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuW8t9XnTRsnKBEL2A6Cq\
-3nS1cuuTnU9PO6oTjPIpMfJD34JGFv5wfzJDNe/rkXdW7IH5zK2MoDMpiQNGYCIR\
-nSI9rOert4d06n2O/ZmR0y4iXz12g6txHPmxzpokDZx5FJsD8xNGYTQX25ZGooTH\
-zlAzlI2mFT7NDDp5Uy48KSdP5eIzvHypJXEX0pTLQsY1upoHgyLX1yQbo3pvVAA+\
-UCvVp6RhQ8rucf0tw0S7VJg9zLrxngtJbnMc+KVQMUp5vuQbD91M2hR9hfifDgX6\
-f8aw46ZhQnCfi8SZaq8wGayFCTiIYq4h+TjMPTWCMXp/nIyKTZ/QmHAb3lXxRjat\
-KwIDAQAB\
------END PUBLIC KEY-----"
+const CLIENT_ID = process.env.REACT_APP_CLIENT_ID as string
+const AUTHORIZE_URL = process.env.REACT_APP_AUTHORIZE_URL as string
+const TOKEN_URL = process.env.REACT_APP_TOKEN_URL as string
 
 function checkClaim(name: string): false | string | undefined {
     let storedClaims = localStorage.getItem("claims")
@@ -22,12 +14,12 @@ function checkClaim(name: string): false | string | undefined {
     return !(name in claims) ? undefined : claims[name]
 }
 
-function checkUserInfo(name: string): false | string | undefined {
-    let storedInfo = localStorage.getItem("userInfo")
-    if (storedInfo === null) return false
-    let userInfo = JSON.parse(storedInfo)
-    return !(name in userInfo) ? undefined : userInfo[name]
-}
+// function checkUserInfo(name: string): false | string | undefined {
+//     let storedInfo = localStorage.getItem("userInfo")
+//     if (storedInfo === null) return false
+//     let userInfo = JSON.parse(storedInfo)
+//     return !(name in userInfo) ? undefined : userInfo[name]
+// }
 
 interface ClaimTypes {
     exp: number,
@@ -49,14 +41,14 @@ function buf2hex(buffer: Uint8Array) { // buffer is an ArrayBuffer
         .join('');
 }
 
-function arrayBufferToBase64( buffer: ArrayBuffer ) {
+function arrayBufferToBase64(buffer: ArrayBuffer) {
     var binary = '';
-    var bytes = new Uint8Array( buffer );
+    var bytes = new Uint8Array(buffer);
     var len = bytes.byteLength;
     for (var i = 0; i < len; i++) {
-        binary += String.fromCharCode( bytes[ i ] );
+        binary += String.fromCharCode(bytes[i]);
     }
-    return window.btoa( binary );
+    return window.btoa(binary);
 }
 
 function sha256asBase64(str: string) {
@@ -109,6 +101,8 @@ class OAuth extends React.Component<{ children: React.ReactNode }> {
         // add all the other search params, response_type, client_id, state, code_challenge, code_challenge_method
 
         // console.log("redir: ", url.toString())
+        localStorage.setItem('login-referrer', window.location.pathname)
+        console.log(window.location.pathname)
         window.location.href = url.toString();
         return null
     }
@@ -164,10 +158,13 @@ class OAuth extends React.Component<{ children: React.ReactNode }> {
 
     render() {
         if (localStorage.getItem("accessToken") && claims.exp && claims.exp > now()) {
-            return <>{this.props.children}</>
+            return <NeedUserInfo>
+                <>{this.props.children}</>
+            </NeedUserInfo>
         }
         return <h1>Loading OAuth2 Login...</h1>;
     }
 }
 
 export default OAuth
+export {now};
