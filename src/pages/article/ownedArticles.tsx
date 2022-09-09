@@ -57,10 +57,10 @@ const OwnedArticlesDisplay = () => {
         articleDisplay.push(
             <ArticlePreview key={id}
                 title={article.title}
+                students={article.students}
                 authors={article.authors}
                 description={article.description}
                 url={article.link || `https://ilp.ints.dev/${id}`}
-                editable
                 id={id}
             />
         )

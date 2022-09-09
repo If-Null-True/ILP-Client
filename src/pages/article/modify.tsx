@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Oauth, { claims } from "../../oauth";
-import { Error } from '../../components/Alerts';
+import { Error, Warning } from '../../components/Alerts';
 import TextInput from '../../components/Input';
 import GoogleIcon from "../../components/Icons";
 import TextEditor from '../../components/TextEditor';
 import UploadFile from "../../components/UploadFiles";
 import '../../scss/pages/modify-article.scss';
 
+const ADMINS = JSON.parse(process.env.REACT_APP_ADMINS as string)
 const ILP_API_URL = process.env.REACT_APP_ILP_API as string
 
 function now() {
@@ -37,7 +38,7 @@ const ModifyArticle = () => {
     </Oauth>
 }
 
-const TextEditorMenu = (props: { setHtml: any }) => {
+const TextEditorWrapper = (props: { setHtml: any, defaultValue?: string }) => {
     // const [html, setHtml] = useState<string>();
     // L ok then
     return (
@@ -47,7 +48,7 @@ const TextEditorMenu = (props: { setHtml: any }) => {
             <textarea id='text-editor-content-holder' name='content' value={html} style={{display: 'hidden'}} /> */}
 
             {/* @ts-ignore */}
-            <TextEditor htmlGetter={(htmlOutput: string) => props.setHtml(htmlOutput)} />
+            <TextEditor htmlGetter={(htmlOutput: string) => props.setHtml(htmlOutput)} defaultValue={props.defaultValue} />
         </div>
     )
 }
@@ -58,23 +59,55 @@ const ArticleModificationPanel = () => {
     const [article, setArticle] = useState<any | null>(null)
     const [unchangedArticle, setUnchangedArticle] = useState<any | null>(null)
     const [shareUser, setShareUser] = useState<string>("")
-    const [originalHtml, originalSetHtml] = useState<string | null>(null)
+    const [originalHtml, originalSetHtml] = useState<string | undefined>(undefined)
     const [html, setHtml] = useState<string | null>(null)
+    const [warning, setWarning] = useState<string | null>(null)
     const { id } = useParams()
 
-    let isHandleUnfinished = false
+    function getArticleHtml() {
+        if (claims.exp < now()) {
+            window.location.reload()
+            return
+        }
+
+        const request_headers: Record<string, string> = {
+            'Authorization': "Bearer " + localStorage.getItem("accessToken") as string
+        }
+
+        fetch(`${ILP_API_URL}articles/upload/retrieve/${id}/index`, {
+            method: 'GET',
+            headers: request_headers
+        })
+            .then((response) => {
+                if (response.status === 200)
+                    response.text().then((html) => {
+                        originalSetHtml(html)
+                        setHtml(html)
+                    })
+                else if (response.status === 404) {
+                    setLoading(null)
+                    originalSetHtml("<p><br></p>")
+                    setHtml("<p><br></p>")
+                }
+                else {
+                    response.text().then((text) => { setLoading(null); setError(text) })
+                }
+            })
+    }
 
     function handleUnfinishedReq(reqInfo: any) {
-        isHandleUnfinished = true
         console.log(reqInfo)
         if (reqInfo.type === 'share') {
             shareArticle(reqInfo.user, true)
         } else if (reqInfo.type === 'unshare') {
             unshareArticle(reqInfo.user, true)
+        } else if (reqInfo.type === 'updateTextEditor') {
+            updateTextEditorArticle(reqInfo.html, true)
         }
     }
 
     useEffect(() => {
+
         console.log(id)
 
         if (claims.exp < now()) {
@@ -104,7 +137,15 @@ const ArticleModificationPanel = () => {
                         setArticle(article)
                         setUnchangedArticle(article)
                         if (!article.students.includes(claims.sub)) {
-                            setError("You do not have edit access to this article")
+                            if ((claims.scope && claims.scope.includes('nbscmanlys-h:teacher')) ||
+                                (claims.sub && ADMINS.includes(claims.sub))) {
+                                setWarning("You do not own this article! Please do not edit this article unless strictly necessary.")
+                                getArticleHtml()
+                            }
+                            else
+                                setError("You do not have edit access to this article")
+                        } else {
+                            getArticleHtml()
                         }
                     })
                 else {
@@ -242,13 +283,13 @@ const ArticleModificationPanel = () => {
     }
 
     if (loading)
-        return <h1>{loading}</h1>
+        return <main><h1>{loading}</h1></main>
 
     if (!article)
-        return <h1>Loading Article</h1>
+        return <main><h1>Loading Article</h1></main>
 
-    function updateTextEditorArticle(html: string | null) {
-        if (!html) return 
+    function updateTextEditorArticle(html: string | null, reloadPage = false) {
+        if (!html) return
 
         if (claims.exp < now()) {
             localStorage.setItem("api_req", JSON.stringify({ type: "updateTextEditor", html: html }))
@@ -268,10 +309,14 @@ const ArticleModificationPanel = () => {
             body: html
         })
             .then((response) => {
-                if (response.status === 200)
-                    response.json().then((info) => {
-                        originalSetHtml(html)
-                    })
+                if (response.status === 200) {
+                    if (reloadPage) {
+                        window.location.reload()
+                        return
+                    }
+                    originalSetHtml(html)
+                    setLoading(null)
+                }
                 else {
                     response.text().then((text) => { setLoading(null); setError(text) })
                 }
@@ -282,9 +327,9 @@ const ArticleModificationPanel = () => {
 
     console.log(html, originalHtml)
 
-    const modify = (article.type === 'textEditor') ? <div>
-        <TextEditorMenu setHtml={(html: string) => {setHtml(html)}} />
-        {(html !== originalHtml) ? <input onClick={() => updateTextEditorArticle(html)} className="button" value="Update"/> : null} 
+    const modify = (article.type === 'textEditor' && originalHtml) ? <div>
+        <TextEditorWrapper setHtml={(html: string) => { setHtml(html) }} defaultValue={originalHtml} />
+        {(html !== originalHtml) ? <button onClick={(value: any) => updateTextEditorArticle(html)}>Save</button> : null}
     </div>
         : null
 
@@ -292,6 +337,7 @@ const ArticleModificationPanel = () => {
         <main id='main'>
             <h1 className="title">Modify Article</h1>
             {(error) ? <Error>(Server) {error}</Error> : null}
+            {(warning) ? <Warning>{warning}</Warning> : null}
 
             <div className="article-modify">
                 <div className="meta-info">

@@ -41,6 +41,7 @@ const Cohort = () => {
           <ArticlePreview key={id}
             title={article.title}
             authors={article.authors}
+            students={article.students}
             description={article.description}
             url={article.link || `https://ilp.ints.dev/${id}`}
             id={id}

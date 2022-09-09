@@ -8,9 +8,9 @@ interface ArticlePreviewProps {
     id: string,
     title: string,
     authors: string[],
+    students: string[],
     description: string,
     url: string,
-    editable?: boolean,
 }
 
 function getAuthorString(authors: string[]) {
@@ -26,9 +26,9 @@ function getAuthorString(authors: string[]) {
 const ArticlePreview = (props: ArticlePreviewProps) => {
     let editLink = null;
     console.log(props, claims.scope, claims.sub)
-    if (props.editable ||
-        (claims.scope && claims.scope.includes('nbscmanlys-h:teacher') ||
-            (claims.sub && ADMINS.includes(claims.sub)))) {
+    if ((claims.scope && claims.scope.includes('nbscmanlys-h:teacher') ||
+        (claims.sub && ADMINS.includes(claims.sub))) ||
+        (claims.sub && props.students.includes(claims.sub))) {
         editLink = (
             <a className='edit' href={`/article/modify/${props.id}`}>
                 <GoogleIcon name='edit' />

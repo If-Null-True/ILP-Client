@@ -178,6 +178,24 @@ pre {
   -webkit-text-fill-color: transparent;
 }
 
+.txt-gr {
+  background-image: linear-gradient(90deg, var(--start-clr) 0%, var(--end-clr) 100%);
+  background-clip: text;
+  font-weight: 700;
+  -webkit-text-fill-color: transparent;
+}
+
+.txt-gr-start-1 { --start-clr: #b91192 }
+.txt-gr-end-1 { --end-clr: #b91192 }
+.txt-gr-start-2 { --start-clr: #11b4da }
+.txt-gr-end-2 { --end-clr: #11b4da }
+.txt-gr-start-3 { --start-clr: #ea5f0a }
+.txt-gr-end-3 { --end-clr: #ea5f0a }
+.txt-gr-start-4 { --start-clr: #4ec3de }
+.txt-gr-end-4 { --end-clr: #4ec3de }
+.txt-gr-start-5 { --start-clr: #1172b9 }
+.txt-gr-end-5 { --end-clr: #1172b9 }
+
 
 // ICONS
 .material-icons-outlined {

@@ -51,6 +51,7 @@ const Category = () => {
             title={article.title}
             authors={article.authors}
             description={article.description}
+            students={article.students}
             url={article.link || `https://ilp.ints.dev/${id}`}
             id={id}
           />

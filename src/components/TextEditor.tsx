@@ -1,5 +1,5 @@
 // @ts-nocheck
-import {Editor, EditorState, RichUtils, getDefaultKeyBinding, AtomicBlockUtils} from 'draft-js';
+import {Editor, EditorState, RichUtils, getDefaultKeyBinding, AtomicBlockUtils, convertFromHTML, ContentState} from 'draft-js';
 import React from 'react';
 import { stateToHTML } from "draft-js-export-html";
 import GoogleIcon from './Icons';
@@ -7,13 +7,20 @@ import GoogleIcon from './Icons';
 class TextEditor extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {editorState: EditorState.createEmpty()};
+
+    let baseEditorState = (this.props.defaultValue)? this.props.defaultValue: '<p></p>';
+    this.state = {
+      editorState: EditorState.createWithContent(
+        ContentState.createFromBlockArray(
+          convertFromHTML(baseEditorState)
+        )
+      )
+    };
 
     this.focus = () => this.refs.editor.focus();
     this.onChange = (editorState) => {
       this.setState({
-        editorState,
-        editorContentHtml: stateToHTML(editorState.getCurrentContent())
+        editorState
       });
       this.props.htmlGetter(stateToHTML(editorState.getCurrentContent()))
     };
@@ -67,7 +74,7 @@ class TextEditor extends React.Component {
   }
 
   render() {
-    const {editorState} = this.state;
+    const { editorState } = this.state;
 
     // If the user changes block type before entering any text, we can
     // either style the placeholder or hide it. Let's just hide it now.

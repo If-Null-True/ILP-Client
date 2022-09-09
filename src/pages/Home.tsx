@@ -38,6 +38,7 @@ const Home = () => {
           <ArticlePreview key={id}
             title={article.title}
             authors={article.authors}
+            students={article.students}
             description={article.description}
             url={article.link || `https://ilp.ints.dev/${id}`}
             id={id}
@@ -47,7 +48,7 @@ const Home = () => {
 
     return (
         <main id="main">
-            <h1 className='title txt-gr1'>Independent Learning Project</h1>
+            <h1 className={'title txt-gr txt-gr-start-' + (Math.ceil(Math.random() * 5)) + ' txt-gr-end-' + (Math.ceil(Math.random() * 5))}>Independent Learning Project</h1>
             <h2 className='subtitle'>NBSC Manly Selective Campus</h2>
             {articleDisplay}
         </main>
