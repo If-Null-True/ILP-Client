@@ -47,7 +47,7 @@ const OwnedArticlesDisplay = () => {
 
     if (error) return <Error>{error}</Error>
     if (loading) return <h1>{loading}</h1>
-    if (articles === null) return <h1>Loadin Articles...</h1>
+    if (articles === null) return <h1>Loading Articles...</h1>
 
     let articleDisplay = []
 

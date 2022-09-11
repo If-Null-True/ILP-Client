@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Oauth, { claims } from "../../oauth";
-import { Error, Warning } from '../../components/Alerts';
+import { Error, Notice, Warning } from '../../components/Alerts';
 import TextInput from '../../components/Input';
 import GoogleIcon from "../../components/Icons";
 import TextEditor from '../../components/TextEditor';
@@ -347,6 +347,16 @@ const ArticleModificationPanel = () => {
                         <TextInput id="title" label="Title" defaultValue={article.title} onChange={handleInputChange} />
                         <br />
                         <br />
+
+                        {((claims.scope && claims.scope.includes('nbscmanlys-h:teacher')) ||
+                                (claims.sub && ADMINS.includes(claims.sub))) ?
+                            <div>
+                                <Notice>You can modify this becuase you are an admin. The higher the value the higher it shows up on the home page.</Notice>
+                                <TextInput id="favoured" label="Favoured Article Score" defaultValue={article.title} onChange={handleInputChange} />
+                                <br />
+                                <br />
+                            </div> : null
+                            }
 
                         <label htmlFor='category'>Category</label>
                         <br />
