@@ -352,7 +352,7 @@ const ArticleModificationPanel = () => {
                                 (claims.sub && ADMINS.includes(claims.sub))) ?
                             <div>
                                 <Notice>You can modify this becuase you are an admin. The higher the value the higher it shows up on the home page.</Notice>
-                                <TextInput id="favoured" label="Favoured Article Score" defaultValue={article.title} onChange={handleInputChange} />
+                                <TextInput id="favoured" label="Favoured Article Score" defaultValue={article.favoured} onChange={handleInputChange} />
                                 <br />
                                 <br />
                             </div> : null
