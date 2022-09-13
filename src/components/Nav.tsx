@@ -193,7 +193,7 @@ const CollapsingNav = () => {
                   </a>
                 </li>
                 <li>
-                  <a href="/category/subject-specifc">
+                  <a href="/category/subjectSpecifc">
                     <GoogleIcon name='extension' />
                     Subject-Specific
                   </a>
