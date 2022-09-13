@@ -30,7 +30,7 @@ const ArticlePreview = (props: ArticlePreviewProps) => {
         (claims.sub && ADMINS.includes(claims.sub))) ||
         (claims.sub && props.students.includes(claims.sub))) {
         editLink = (
-            <a className='edit' href={`/article/modify/${props.id}`}>
+            <a className='edit btn' href={`/article/modify/${props.id}`}>
                 <GoogleIcon name='edit' />
             </a>
         )

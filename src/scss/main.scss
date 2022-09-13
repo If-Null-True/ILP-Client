@@ -593,9 +593,15 @@ article {
   }
 
   .edit {
+    background: rgba(globals.$clr-accent, 0.2);
+    padding: 5px;
     position: absolute;
     top: 0;
     right: 0;
+
+    &:hover {
+      background: globals.$clr-hover;
+    }
   }
 
   p {
@@ -655,5 +661,38 @@ article {
     transition: none !important;
     animation: none !important;
     scroll-behavior: initial !important;
+  }
+}
+
+
+
+
+/********************
+     RESPONSIVE
+********************/
+@media only screen and (max-width: 1000px) {
+  main {
+    margin: 0 !important;
+  }
+
+  article {
+    .paper {
+      padding: 20px;
+
+      pre {
+        margin: 0.25rem;
+      }
+
+      .question {
+        margin: 0.75rem;
+      }
+    }
+  }
+
+  .article-preview .information {
+    .edit {
+      top: initial;
+      bottom: -25px;
+    }
   }
 }
