@@ -26,7 +26,7 @@ const Cohort = () => {
                     response.text().then((text) => { setLoading(null); setError(text) })
                 }
             })
-    }, [])
+    }, [cohort])
 
     if (error) return <Error>{error}</Error>
     if (loading) return <h1>{loading}</h1>
@@ -38,24 +38,19 @@ const Cohort = () => {
         const article = articles[i]
         const id = article._id["$oid"]
         articleDisplay.push(
-          <ArticlePreview key={id}
-            title={article.title}
-            authors={article.authors}
-            students={article.students}
-            description={article.description}
-            url={article.link || `https://ilp.ints.dev/${id}`}
-            id={id}
-          />
-      )
+            <ArticlePreview key={id}
+                article={article}
+            />
+        )
     }
 
 
 
     return (
-      <main id='main'>
-        <h1 className="title">G{cohort} Projects</h1>
-        {articleDisplay}
-      </main>
+        <main id='main'>
+            <h1 className="title">G{cohort} Projects</h1>
+            {articleDisplay}
+        </main>
     )
 }
 

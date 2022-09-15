@@ -35,7 +35,7 @@ const Category = () => {
                     response.text().then((text) => { setLoading(null); setError(text) })
                 }
             })
-    }, [])
+    }, [category])
 
     if (error) return <Error>{error}</Error>
     if (loading) return <h1>{loading}</h1>
@@ -48,12 +48,7 @@ const Category = () => {
         const id = article._id["$oid"]
         articleDisplay.push(
           <ArticlePreview key={id}
-            title={article.title}
-            authors={article.authors}
-            description={article.description}
-            students={article.students}
-            url={article.link || `https://ilp.ints.dev/${id}`}
-            id={id}
+            article={article}
           />
       )
     }

@@ -5,7 +5,7 @@ import { Error, Notice, Warning } from '../../components/Alerts';
 import TextInput from '../../components/Input';
 import GoogleIcon from "../../components/Icons";
 import TextEditor from '../../components/TextEditor';
-import UploadFile from "../../components/UploadFiles";
+// import UploadFile from "../../components/UploadFiles";
 import '../../scss/pages/modify-article.scss';
 
 const ADMINS = JSON.parse(process.env.REACT_APP_ADMINS as string)
@@ -62,6 +62,7 @@ const ArticleModificationPanel = () => {
     const [originalHtml, originalSetHtml] = useState<string | undefined>(undefined)
     const [html, setHtml] = useState<string | null>(null)
     const [warning, setWarning] = useState<string | null>(null)
+    const [confimation, setConfirmation] = useState<JSX.Element | null>(null)
     const { id } = useParams()
 
     function getArticleHtml() {
@@ -249,6 +250,35 @@ const ArticleModificationPanel = () => {
             })
     }
 
+    function deleteArticle() {
+        if (claims.exp < now()) {
+            localStorage.setItem("api_req", JSON.stringify({ type: "deleteArticle" }))
+            window.location.reload()
+            return
+        }
+
+        const request_headers: Record<string, string> = {
+            'Authorization': "Bearer " + localStorage.getItem("accessToken") as string
+        }
+
+        setLoading("Deleting Article...")
+
+        fetch(`${ILP_API_URL}articles/modify/${id}`, {
+            method: 'DELETE',
+            headers: request_headers
+        })
+            .then((response) => {
+                if (response.status === 200)
+                    response.json().then((info) => {
+                        localStorage.setItem("ArticleBackup", JSON.stringify(info))
+                        window.location.href = "/article/owned"
+                    })
+                else {
+                    response.text().then((text) => { setLoading(null); setError(text) })
+                }
+            })
+    }
+
     function saveArticleMetaChanges(article: any) {
         if (claims.exp < now()) {
             localStorage.setItem("api_req", JSON.stringify({ type: "updateArticle", article: article }))
@@ -282,11 +312,6 @@ const ArticleModificationPanel = () => {
             })
     }
 
-    if (loading)
-        return <main><h1>{loading}</h1></main>
-
-    if (!article)
-        return <main><h1>Loading Article</h1></main>
 
     function updateTextEditorArticle(html: string | null, reloadPage = false) {
         if (!html) return
@@ -323,6 +348,16 @@ const ArticleModificationPanel = () => {
             })
     }
 
+    if (loading)
+        return <main><h1>{loading}</h1></main>
+
+    if (!article)
+        return <main><h1>Loading Article</h1></main>
+
+    if (confimation)
+        return <main>{confimation}</main>
+
+
     const linkTextArea = (article.link) ? <TextInput id='link' label='Article Link' onChange={handleInputChange} required defaultValue={article.link} /> : null
 
     console.log(html, originalHtml)
@@ -349,14 +384,14 @@ const ArticleModificationPanel = () => {
                         <br />
 
                         {((claims.scope && claims.scope.includes('nbscmanlys-h:teacher')) ||
-                                (claims.sub && ADMINS.includes(claims.sub))) ?
+                            (claims.sub && ADMINS.includes(claims.sub))) ?
                             <div>
-                                <Notice>You can modify this becuase you are an admin. The higher the value the higher it shows up on the home page.</Notice>
+                                <Notice>You can modify this because you are an admin. The higher the value, the higher it shows up on the home page.</Notice>
                                 <TextInput id="favoured" label="Favoured Article Score" defaultValue={article.favoured} onChange={handleInputChange} />
                                 <br />
                                 <br />
                             </div> : null
-                            }
+                        }
 
                         <label htmlFor='category'>Category</label>
                         <br />
@@ -408,6 +443,22 @@ const ArticleModificationPanel = () => {
                         />
                         <br />
                         {(shareUser) ? <button onClick={() => shareArticle(shareUser)}>Share</button> : null}
+                    </div>
+
+                    <div>
+                        <h2>Delete Article!</h2>
+                        <button onClick={() => {
+                            setConfirmation(<Warning>
+                                <h1>Are you sure you want to delete this article!</h1>
+                                <p>This can not be undone!</p>
+                                <br/>
+                                <button onClick={() => setConfirmation(null)}>
+                                    <strong>Cancel</strong>
+                                </button>
+                                <span>    </span>
+                                <button onClick={() => deleteArticle()}>DELETE!</button>
+                            </Warning>)
+                        }}>Delete Article</button>
                     </div>
                 </div>
 

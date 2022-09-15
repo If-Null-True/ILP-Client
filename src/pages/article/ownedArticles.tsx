@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Error } from "../../components/Alerts";
-import GoogleIcon from "../../components/Icons";
 import OAuth, { claims } from "../../oauth";
 
 import '../../scss/pages/owned-articles.scss';
@@ -56,17 +55,17 @@ const OwnedArticlesDisplay = () => {
         const id = article._id["$oid"]
         articleDisplay.push(
             <ArticlePreview key={id}
-                title={article.title}
-                students={article.students}
-                authors={article.authors}
-                description={article.description}
-                url={article.link || `https://ilp.ints.dev/${id}`}
-                id={id}
+                article={article}
             />
         )
     }
 
-
+    if (!articleDisplay.length)
+    return <main id="main">
+        <h1 className='title'>Owned Articles</h1>
+        <h2>You have not created an article yet! Click on the button below to create an article</h2>
+        <a className="button" href="/article/create">Create A Project!</a>
+    </main>
 
     return <main id="main">
         <h1 className='title'>Owned Articles</h1>

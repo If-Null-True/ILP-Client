@@ -226,10 +226,12 @@ const ArticleCreate = () => {
             <button
               className={(menu === 'websiteFiles') ? 'selected' : ''}
               onClick={() => { setMenu('websiteFiles') }}
+              disabled
             >
               <h2>Upload Website</h2>
               <p>
                 For websites made with from scratch with HTML, CSS, JS, etc.
+                (Not fully implimented yet)
               </p>
             </button>
 

@@ -1,16 +1,30 @@
 import { claims } from "../oauth";
+import { Notice } from "./Alerts";
 import GoogleIcon from "./Icons";
 
 console.log(process.env.REACT_APP_ADMINS as string)
 const ADMINS = JSON.parse(process.env.REACT_APP_ADMINS as string)
 
-interface ArticlePreviewProps {
-    id: string,
+type Categories = "art" | "entrepreneurial" | "research" | "design" | "subjectSpecific"
+type ArticleTypes = "websiteFiles" | "websiteLink" | "textEditor"
+
+interface ArticleType {
+    _id: { "$oid": string },
     title: string,
     authors: string[],
     students: string[],
+    tags: string[],
+    category: Categories,
+    favoured: number,
     description: string,
-    url: string,
+    type: ArticleTypes,
+    created: Date,
+    link?: string,
+}
+
+interface ArticlePreviewProps {
+    article: ArticleType,
+    showFavouredScores?: Boolean
 }
 
 function getAuthorString(authors: string[]) {
@@ -24,30 +38,38 @@ function getAuthorString(authors: string[]) {
 }
 
 const ArticlePreview = (props: ArticlePreviewProps) => {
-    let editLink = null;
+    const id = props.article._id["$oid"]
+    const isAdminOrTeacher = (claims.scope && claims.scope.includes('nbscmanlys-h:teacher')) ||
+        (claims.sub && ADMINS.includes(claims.sub))
+    const canEdit = isAdminOrTeacher ||
+        (claims.sub && props.article.students.includes(claims.sub))
+    let editLink, favoured = null;
     console.log(props, claims.scope, claims.sub)
-    if ((claims.scope && claims.scope.includes('nbscmanlys-h:teacher') ||
-        (claims.sub && ADMINS.includes(claims.sub))) ||
-        (claims.sub && props.students.includes(claims.sub))) {
+    if (canEdit) {
         editLink = (
-            <a className='edit btn' href={`/article/modify/${props.id}`}>
+            <a className='edit btn' href={`/article/modify/${id}`}>
                 <GoogleIcon name='edit' />
             </a>
         )
+        if (props.article.favoured !== 0 && props.showFavouredScores)
+            favoured = (
+                <Notice>This article has a Non-Default Favoured Score of {props.article.favoured}</Notice>
+            )
     }
 
     return (
         <div className="article-preview">
             <div className="information">
                 {editLink}
-                <h2>{props.title}</h2>
+                <h2>{props.article.title}</h2>
                 <div className="authors">
-                    by {getAuthorString(props.authors)}
+                    by {getAuthorString(props.article.authors)}
                 </div>
                 <p className="description">
-                    {props.description}
+                    {props.article.description}
                 </p>
-                <a href={props.url}>See More</a>
+                <a href={props.article.link || `https://ilp.ints.dev/${id}`}>See More</a>
+                {favoured}
             </div>
         </div>
     )
