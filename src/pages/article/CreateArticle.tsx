@@ -64,7 +64,8 @@ const MetadataInput = (props: { menu: string | undefined }) => {
     }
 
     let submissionData: any = data
-    if (typeof (data.tags as any) === 'string' || (data.tags as any) instanceof String) {
+    if (data.tags === "") submissionData.tags = []
+    else if (typeof (data.tags as any) === 'string' || (data.tags as any) instanceof String) {
       let tags = data.tags.trim().split(",")
       for (let i = 0; i < tags.length; i++) {
         tags[i] = tags[i].trim()
