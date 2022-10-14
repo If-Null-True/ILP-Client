@@ -64,13 +64,16 @@ const MetadataInput = (props: { menu: string | undefined }) => {
     }
 
     let submissionData: any = data
-    if (data.tags === "") submissionData.tags = []
-    else if (typeof (data.tags as any) === 'string' || (data.tags as any) instanceof String) {
-      let tags = data.tags.trim().split(",")
-      for (let i = 0; i < tags.length; i++) {
-        tags[i] = tags[i].trim()
+    let tags = data.tags.trim()
+    if (tags.endsWith(','))
+      tags = tags.slice(0, tags.length - 1)
+    if (tags === "") submissionData.tags = []
+    else if (typeof (tags as any) === 'string' || (tags as any) instanceof String) {
+      let tagArr = tags.trim().split(",")
+      for (let i = 0; i < tagArr.length; i++) {
+        tagArr[i] = tagArr[i].trim()
       }
-      submissionData.tags = tags
+      submissionData.tags = tagArr
     }
 
     if (data.link) {
@@ -149,7 +152,7 @@ const MetadataInput = (props: { menu: string | undefined }) => {
     <br />
     <br />
 
-    <TextInput id='tags' label='Tags' defaultValue={formInfo.tags} onChange={handleInputChange} />
+    <TextInput id='tags' label='Tags' defaultValue={formInfo.tags} onChange={handleInputChange} required />
     <Notice>
       Tags must be separated by a comma
       (e.g. computer science<span className='highlighted'>,&nbsp;</span>algorithms)

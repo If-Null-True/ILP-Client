@@ -6,7 +6,7 @@ class LocationSwitcher extends React.Component<{ href?: string, text?: React.Rea
       window.location.href = this.props.href as string;
     }
     else if (this.props.referrer || this.props.referer) {
-      let origin = localStorage.getItem('login-referrer');
+      const origin = localStorage.getItem('login-referrer');
     //   localStorage.removeItem('login-referrer')
       if (!origin || origin === '/auth')
         window.location.href = '/';
